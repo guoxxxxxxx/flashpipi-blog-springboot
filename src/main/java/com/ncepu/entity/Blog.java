@@ -13,9 +13,7 @@ public class Blog {
     private String publishTime;
     private String updateTime;
     private String category;
-    private String tags;
+    private String collection;
     private Integer viewsCount;
     private String content;
-    private Integer isDelete;
-    private String uuid;
 }
