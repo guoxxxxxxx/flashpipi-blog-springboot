@@ -11,7 +11,6 @@ public class User {
     private String sex;
     private String phone;
     private String email;
-    private Integer isDelete;
     private String password;
     private String avatar;
     private static final long serialVersionUID = 1L;

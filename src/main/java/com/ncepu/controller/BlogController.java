@@ -88,4 +88,46 @@ public class BlogController {
         map.put("allViews", allBlogsViewsCount);
         return map;
     }
+
+    /**
+     * 分类查询博客
+     */
+    @GetMapping("/getBlogsByCategory")
+    public List<Blog> getBlogsByCategory(@RequestParam String category, @RequestParam int pageSize,
+                                         @RequestParam int currentPage){
+        return blogService.getBlogsByCategory(category, pageSize, currentPage);
+    }
+
+    /**
+     * 分类查询博客的数量
+     */
+    @GetMapping("/getBlogsCountByCategory")
+    public long getBlogsCountByCategory(@RequestParam String category){
+        return blogService.getBlogsCountByCategory(category);
+    }
+
+    /**
+     * 查询合集数量
+     */
+    @GetMapping("/getCollectionCount")
+    public List<Map<String, Object>> getCollectionCount(){
+        return blogService.getCollectionCount();
+    }
+
+    /**
+     * 分类查询合集
+     */
+    @GetMapping("/getBlogsByCollection")
+    public List<Blog> getBlogsByCollection(@RequestParam String collection, @RequestParam int pageSize,
+                                         @RequestParam int currentPage){
+        return blogService.getBlogsByCollection(collection, pageSize, currentPage);
+    }
+
+    /**
+     * 获取指定合集的数量
+     */
+    @GetMapping("/getCountByCollection")
+    public long getCountByCollection(@RequestParam String collection){
+        return blogService.getCountByCollection(collection);
+    }
 }

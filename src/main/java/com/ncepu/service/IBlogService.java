@@ -2,6 +2,7 @@ package com.ncepu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
 import com.ncepu.entity.Blog;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import java.util.List;
 import java.util.Map;
@@ -41,4 +42,29 @@ public interface IBlogService extends IService<Blog> {
      * 查询所有文章的访客数量
      */
     List<Map<String, Object>> getAllBlogsViewsCount();
+
+    /**
+     * 分类查询博客
+     */
+    List<Blog> getBlogsByCategory(String category, int pageSize, int currentPage);
+
+    /**
+     * 分类查询博客的数量
+     */
+    long getBlogsCountByCategory(String category);
+
+    /**
+     * 查询合集数量
+     */
+    List<Map<String, Object>> getCollectionCount();
+
+    /**
+     * 分合集查询博客
+     */
+    List<Blog> getBlogsByCollection(String collection, int pageSize, int currentPage);
+
+    /**
+     * 获取指定合集的数量
+     */
+    long getCountByCollection(String collection);
 }

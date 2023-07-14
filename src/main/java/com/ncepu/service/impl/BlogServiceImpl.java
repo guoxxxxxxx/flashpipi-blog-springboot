@@ -82,4 +82,45 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         wrapper.select("sum(views_count) as sum");
         return blogDao.selectMaps(wrapper);
     }
+
+    @Override
+    public List<Blog> getBlogsByCategory(String category, int pageSize, int currentPage) {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
+        wrapper.select("id", "title", "description", "content", "image_path", "views_count", "publish_time", "category")
+                .eq("category", category);
+        IPage iPage = new Page(currentPage, pageSize);
+        blogDao.selectPage(iPage, wrapper);
+        return iPage.getRecords();
+    }
+
+    @Override
+    public long getBlogsCountByCategory(String category) {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
+        wrapper.eq("category", category);
+        return blogDao.selectCount(wrapper);
+    }
+
+    @Override
+    public List<Map<String, Object>> getCollectionCount() {
+        QueryWrapper wrapper = new QueryWrapper<>().select("collection as name", "count(collection) as value")
+                .ne("collection", "NULL")
+                .groupBy("collection");
+        return blogDao.selectMaps(wrapper);
+    }
+
+    @Override
+    public List<Blog> getBlogsByCollection(String collection, int pageSize, int currentPage) {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
+        wrapper.eq("collection", collection);
+        IPage iPage = new Page(currentPage, pageSize);
+        blogDao.selectPage(iPage, wrapper);
+        return iPage.getRecords();
+    }
+
+    @Override
+    public long getCountByCollection(String collection) {
+        QueryWrapper wrapper = new QueryWrapper();
+        wrapper.eq("collection", collection);
+        return blogDao.selectCount(wrapper);
+    }
 }
