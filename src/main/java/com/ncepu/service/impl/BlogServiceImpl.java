@@ -123,4 +123,18 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         wrapper.eq("collection", collection);
         return blogDao.selectCount(wrapper);
     }
+
+    @Override
+    public List<Blog> getShortBlogsList(int currentPage, int pageSize) {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<Blog>().select("id", "title", "description",
+                "update_time", "views_count", "category");
+        if(currentPage == -1){
+            return blogDao.selectList(wrapper);
+        }
+        else {
+            IPage page = new Page(currentPage, pageSize);
+            blogDao.selectPage(page, wrapper);
+            return page.getRecords();
+        }
+    }
 }

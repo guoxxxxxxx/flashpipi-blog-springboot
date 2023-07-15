@@ -49,7 +49,7 @@ public class BlogController {
     }
 
     /**
-     * 根据日期排序选取最近的五篇文章作为轮播图
+     * 根据日期排序选取最近的篇文章
      */
     @GetMapping("/getRecentBlogs")
     public List<Blog> getRecentBlogs(@RequestParam int page, @RequestParam int size){
@@ -129,5 +129,13 @@ public class BlogController {
     @GetMapping("/getCountByCollection")
     public long getCountByCollection(@RequestParam String collection){
         return blogService.getCountByCollection(collection);
+    }
+
+    /**
+     * 查询指定数量的博客(不包含content)
+     */
+    @GetMapping("/getShortBlogsList")
+    public List<Blog> getShortBlogsList(@RequestParam int currentPage, @RequestParam int pageSize){
+        return blogService.getShortBlogsList(currentPage, pageSize);
     }
 }

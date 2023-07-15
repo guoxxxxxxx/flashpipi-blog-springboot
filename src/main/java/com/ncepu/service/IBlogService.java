@@ -67,4 +67,9 @@ public interface IBlogService extends IService<Blog> {
      * 获取指定合集的数量
      */
     long getCountByCollection(String collection);
+
+    /**
+     * 简要查询博客信息(不含content)
+     */
+    List<Blog> getShortBlogsList(int currentPage, int pageSize);
 }

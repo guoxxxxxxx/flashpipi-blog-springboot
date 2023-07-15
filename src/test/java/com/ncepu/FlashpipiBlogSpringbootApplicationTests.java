@@ -17,4 +17,8 @@ class FlashpipiBlogSpringbootApplicationTests {
 		System.out.println(user);
 	}
 
+	@Test
+	void test(){
+
+	}
 }
