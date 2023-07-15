@@ -7,10 +7,7 @@ import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -137,5 +134,36 @@ public class BlogController {
     @GetMapping("/getShortBlogsList")
     public List<Blog> getShortBlogsList(@RequestParam int currentPage, @RequestParam int pageSize){
         return blogService.getShortBlogsList(currentPage, pageSize);
+    }
+
+    /**
+     * 根据id删除博客
+     */
+    @GetMapping("/deleteById")
+    public long deleteById(@RequestParam int id){
+        if(blogService.removeById(id)){
+            // 返回1 删除成功
+            return 1;
+        }
+        else {
+            // 返回-1 删除失败
+            return -1;
+        }
+    }
+
+    /**
+     * 更新博客
+     */
+    @PostMapping("/updateBlog")
+    public long updateBlog(@RequestBody Blog blog){
+        return blogService.updateBlog(blog);
+    }
+
+    /**
+     * 上传新博客
+     */
+    @PostMapping("/uploadBlog")
+    public long uploadBlog(@RequestBody Blog blog){
+        return blogService.uploadBlog(blog);
     }
 }

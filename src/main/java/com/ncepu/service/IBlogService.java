@@ -72,4 +72,14 @@ public interface IBlogService extends IService<Blog> {
      * 简要查询博客信息(不含content)
      */
     List<Blog> getShortBlogsList(int currentPage, int pageSize);
+
+    /**
+     * 更新博客
+     */
+    long updateBlog(Blog blog);
+
+    /**
+     * 上传新博客
+     */
+    long uploadBlog(Blog blog);
 }

@@ -7,6 +7,7 @@ import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ncepu.dao.BlogDao;
 import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
+import com.ncepu.utils.DateUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -49,7 +50,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     public List<Blog> getAllBlogs(int page) {
         QueryWrapper<Blog> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "title", "description", "image_path", "publish_time", "update_time",
-                "category", "views_count").eq("is_delete", 0);
+                "category", "views_count").eq("is_delete", 0)
+                .orderBy(true,false, "update_time");
         IPage iPage = new Page(page, 12);
         blogDao.selectPage(iPage, queryWrapper);
         return iPage.getRecords();
@@ -127,7 +129,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     @Override
     public List<Blog> getShortBlogsList(int currentPage, int pageSize) {
         QueryWrapper<Blog> wrapper = new QueryWrapper<Blog>().select("id", "title", "description",
-                "update_time", "views_count", "category");
+                "update_time", "views_count", "category").orderBy(true,false, "update_time");
         if(currentPage == -1){
             return blogDao.selectList(wrapper);
         }
@@ -136,5 +138,18 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
             blogDao.selectPage(page, wrapper);
             return page.getRecords();
         }
+    }
+
+    @Override
+    public long updateBlog(Blog blog) {
+        blog.setUpdateTime(DateUtils.getCurrentTime());
+        return blogDao.updateById(blog);
+    }
+
+    @Override
+    public long uploadBlog(Blog blog) {
+        blog.setPublishTime(DateUtils.getCurrentTime());
+        blog.setUpdateTime(DateUtils.getCurrentTime());
+        return blogDao.insert(blog);
     }
 }
