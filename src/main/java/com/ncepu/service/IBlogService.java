@@ -82,4 +82,9 @@ public interface IBlogService extends IService<Blog> {
      * 上传新博客
      */
     long uploadBlog(Blog blog);
+
+    /**
+     * 获取网站最后一次更新时间
+     */
+    String getLastUpdateTime();
 }

@@ -5,6 +5,7 @@ import com.ncepu.service.IInformationService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -21,5 +22,13 @@ public class InformationController {
         // 每次访问主页时默认访客+1
         service.addViews();
         return service.getById(1);
+    }
+
+    /**
+     * 更新小站资讯
+     */
+    @GetMapping("/updateInfo")
+    public long updateInfo(@RequestParam String url, @RequestParam String notice){
+        return service.updateInfo(url, notice);
     }
 }

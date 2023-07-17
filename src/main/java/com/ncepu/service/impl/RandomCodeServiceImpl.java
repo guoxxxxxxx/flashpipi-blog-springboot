@@ -34,7 +34,8 @@ public class RandomCodeServiceImpl extends ServiceImpl<RandomCodeDao, RandomCode
             else {
                 changeRow = randomCodeDao.insert(code);
             }
-            //        SendRandomCode.sendMessage(code.getCode(), email);
+            // 发送邮件
+            SendRandomCode.sendMessage(code.getCode(), email);
         }
         else {
             // 返回-1说明邮箱尚未注册;

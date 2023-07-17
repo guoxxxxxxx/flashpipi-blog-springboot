@@ -9,4 +9,9 @@ public interface IInformationService extends IService<Information> {
      * 访客数量+1
      */
     void addViews();
+
+    /**
+     * 更新小站资讯
+     */
+    long updateInfo(String url, String notice);
 }

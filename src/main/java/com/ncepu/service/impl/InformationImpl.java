@@ -19,4 +19,13 @@ public class InformationImpl extends ServiceImpl<InformationDao, Information> im
         information.setViewsCount(information.getViewsCount()+1);
         dao.updateById(information);
     }
+
+    @Override
+    public long updateInfo(String url, String notice) {
+        Information information = new Information();
+        information.setId(1);
+        information.setWebsite(url);
+        information.setNotice(notice);
+        return dao.updateById(information);
+    }
 }

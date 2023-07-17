@@ -166,4 +166,12 @@ public class BlogController {
     public long uploadBlog(@RequestBody Blog blog){
         return blogService.uploadBlog(blog);
     }
+
+    /**
+     * 获取网站最后更新时间
+     */
+    @GetMapping("/getLastUpdateTime")
+    public String getLastUpdateTime(){
+        return blogService.getLastUpdateTime();
+    }
 }

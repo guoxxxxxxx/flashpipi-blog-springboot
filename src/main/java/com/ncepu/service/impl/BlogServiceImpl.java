@@ -152,4 +152,11 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         blog.setUpdateTime(DateUtils.getCurrentTime());
         return blogDao.insert(blog);
     }
+
+    @Override
+    public String getLastUpdateTime() {
+        Blog blog = blogDao.selectOne(new QueryWrapper<Blog>().orderBy(true, false, "update_time")
+                .last("limit 1"));
+        return blog.getUpdateTime();
+    }
 }
