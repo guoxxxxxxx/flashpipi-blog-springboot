@@ -25,21 +25,41 @@ public class RandomCodeServiceImpl extends ServiceImpl<RandomCodeDao, RandomCode
         RandomCode code = new RandomCode();
         code.setEmail(email);
         code.setCode(RandomCodeUtils.getRandomCode());
+        boolean emailIsExist = userDao.selectCount(new QueryWrapper<User>().eq("email", email)) == 1;
         int changeRow = 0;
-        // 判断该邮箱是否已经注册
-        if(model==2 || userDao.selectCount(new QueryWrapper<User>().eq("email", email)) == 1){
-            if(randomCodeDao.selectCount(new QueryWrapper<RandomCode>().eq("email", email)) == 1){
-                changeRow =  randomCodeDao.update(code ,new QueryWrapper<RandomCode>().eq("email", email));
+        if(model==2){
+            if (emailIsExist){
+                return -2;  // 该邮箱已经被注册
             }
             else {
-                changeRow = randomCodeDao.insert(code);
+                // 此处是判断是要更新数据库中的信息还是新插入信息
+                if(randomCodeDao.selectCount(new QueryWrapper<RandomCode>().eq("email", email)) == 1){
+                    changeRow =  randomCodeDao.update(code ,new QueryWrapper<RandomCode>().eq("email", email));
+                }
+                else {
+                    changeRow = randomCodeDao.insert(code);
+                }
+                // 发送邮件
+                SendRandomCode.sendMessage(code.getCode(), email);
+                return changeRow;   //验证码发送成功
             }
-            // 发送邮件
-            SendRandomCode.sendMessage(code.getCode(), email);
         }
-        else {
-            // 返回-1说明邮箱尚未注册;
-            changeRow = -1;
+        else if(model == 3){
+            if (emailIsExist){
+                // 此处是判断是要更新数据库中的信息还是新插入信息
+                if(randomCodeDao.selectCount(new QueryWrapper<RandomCode>().eq("email", email)) == 1){
+                    changeRow =  randomCodeDao.update(code ,new QueryWrapper<RandomCode>().eq("email", email));
+                }
+                else {
+                    changeRow = randomCodeDao.insert(code);
+                }
+                // 发送邮件
+                SendRandomCode.sendMessage(code.getCode(), email);
+                return changeRow;   //验证码发送成功
+            }
+            else {
+                return -3;  // 改邮箱尚未注册
+            }
         }
         return changeRow;
     }
