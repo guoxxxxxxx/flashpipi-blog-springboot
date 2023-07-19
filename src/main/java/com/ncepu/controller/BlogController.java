@@ -174,4 +174,12 @@ public class BlogController {
     public String getLastUpdateTime(){
         return blogService.getLastUpdateTime();
     }
+
+    /**
+     * 搜索
+     */
+    @GetMapping("/search")
+    public List<Blog> search(@RequestParam String keywords){
+        return blogService.search(keywords);
+    }
 }

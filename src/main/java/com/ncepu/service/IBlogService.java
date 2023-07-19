@@ -87,4 +87,9 @@ public interface IBlogService extends IService<Blog> {
      * 获取网站最后一次更新时间
      */
     String getLastUpdateTime();
+
+    /**
+     * 搜索
+     */
+    List<Blog> search(String keywords);
 }

@@ -8,6 +8,7 @@ import com.ncepu.dao.BlogDao;
 import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
 import com.ncepu.utils.DateUtils;
+import com.ncepu.utils.SearchUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -158,5 +159,20 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         Blog blog = blogDao.selectOne(new QueryWrapper<Blog>().orderBy(true, false, "update_time")
                 .last("limit 1"));
         return blog.getUpdateTime();
+    }
+
+    @Override
+    public List<Blog> search(String keywords) {
+        int length = 200;   // 截取的长度
+        List<Blog> blogList = blogDao.selectList(new QueryWrapper<Blog>().like("content", keywords));
+        for(int i=0; i<blogList.size(); i++){
+            int index = blogList.get(i).getContent().toUpperCase().indexOf(keywords.toUpperCase());
+            int startIndex = Math.max(index - 20, 0);
+            int endIndex = Math.min(startIndex + length, blogList.get(i).getContent().length());
+            blogList.get(i).setContent(blogList.get(i).getContent().substring(startIndex, endIndex));
+            blogList.get(i).setContent(SearchUtils.highLight(blogList.get(i).getContent(), keywords));
+            blogList.get(i).setTitle(SearchUtils.highLight(blogList.get(i).getTitle(), keywords));
+        }
+        return blogList;
     }
 }
