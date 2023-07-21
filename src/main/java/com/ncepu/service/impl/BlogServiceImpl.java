@@ -92,10 +92,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         wrapper.select("id", "title", "description", "content", "image_path", "views_count", "publish_time", "category")
                 .eq("category", category);
         if(isSortDesc){
-            wrapper.orderByDesc("update_time");
+            wrapper.orderByDesc("publish_time");
         }
         else{
-            wrapper.orderByAsc("update_time");
+            wrapper.orderByAsc("publish_time");
         }
         IPage iPage = new Page(currentPage, pageSize);
         blogDao.selectPage(iPage, wrapper);
@@ -129,10 +129,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
             wrapper.orderByAsc("sort_id");
         }
         if (isSortByTimeDesc){
-            wrapper.orderByDesc("update_time");
+            wrapper.orderByDesc("publish_time");
         }
         else {
-            wrapper.orderByAsc("update_time");
+            wrapper.orderByAsc("publish_time");
         }
         IPage iPage = new Page(currentPage, pageSize);
         blogDao.selectPage(iPage, wrapper);
