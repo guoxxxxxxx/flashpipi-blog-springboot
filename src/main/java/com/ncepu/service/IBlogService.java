@@ -46,7 +46,7 @@ public interface IBlogService extends IService<Blog> {
     /**
      * 分类查询博客
      */
-    List<Blog> getBlogsByCategory(String category, int pageSize, int currentPage);
+    List<Blog> getBlogsByCategory(String category, int pageSize, int currentPage, boolean isSortDesc);
 
     /**
      * 分类查询博客的数量
@@ -61,7 +61,7 @@ public interface IBlogService extends IService<Blog> {
     /**
      * 分合集查询博客
      */
-    List<Blog> getBlogsByCollection(String collection, int pageSize, int currentPage);
+    List<Blog> getBlogsByCollection(String collection, int pageSize, int currentPage, boolean isSortByTimeDesc, boolean isSortDesc);
 
     /**
      * 获取指定合集的数量

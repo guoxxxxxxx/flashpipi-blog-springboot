@@ -16,4 +16,5 @@ public class Blog {
     private String collection;
     private Integer viewsCount;
     private String content;
+    private Integer sortId;
 }

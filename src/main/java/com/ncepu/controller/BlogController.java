@@ -91,8 +91,8 @@ public class BlogController {
      */
     @GetMapping("/getBlogsByCategory")
     public List<Blog> getBlogsByCategory(@RequestParam String category, @RequestParam int pageSize,
-                                         @RequestParam int currentPage){
-        return blogService.getBlogsByCategory(category, pageSize, currentPage);
+                                         @RequestParam int currentPage, @RequestParam boolean isSortDesc){
+        return blogService.getBlogsByCategory(category, pageSize, currentPage, isSortDesc);
     }
 
     /**
@@ -116,8 +116,9 @@ public class BlogController {
      */
     @GetMapping("/getBlogsByCollection")
     public List<Blog> getBlogsByCollection(@RequestParam String collection, @RequestParam int pageSize,
-                                         @RequestParam int currentPage){
-        return blogService.getBlogsByCollection(collection, pageSize, currentPage);
+                                         @RequestParam int currentPage, @RequestParam boolean isSortByTimeDesc,
+                                           @RequestParam boolean isSortDesc){
+        return blogService.getBlogsByCollection(collection, pageSize, currentPage, isSortByTimeDesc, isSortDesc);
     }
 
     /**

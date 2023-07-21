@@ -87,10 +87,16 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     }
 
     @Override
-    public List<Blog> getBlogsByCategory(String category, int pageSize, int currentPage) {
+    public List<Blog> getBlogsByCategory(String category, int pageSize, int currentPage, boolean isSortDesc) {
         QueryWrapper<Blog> wrapper = new QueryWrapper<>();
         wrapper.select("id", "title", "description", "content", "image_path", "views_count", "publish_time", "category")
                 .eq("category", category);
+        if(isSortDesc){
+            wrapper.orderByDesc("update_time");
+        }
+        else{
+            wrapper.orderByAsc("update_time");
+        }
         IPage iPage = new Page(currentPage, pageSize);
         blogDao.selectPage(iPage, wrapper);
         return iPage.getRecords();
@@ -112,9 +118,22 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     }
 
     @Override
-    public List<Blog> getBlogsByCollection(String collection, int pageSize, int currentPage) {
+    public List<Blog> getBlogsByCollection(String collection, int pageSize, int currentPage, boolean isSortByTimeDesc,
+                                           boolean isSortDesc) {
         QueryWrapper<Blog> wrapper = new QueryWrapper<>();
         wrapper.eq("collection", collection);
+        if (isSortDesc){
+            wrapper.orderByDesc("sort_id");
+        }
+        else {
+            wrapper.orderByAsc("sort_id");
+        }
+        if (isSortByTimeDesc){
+            wrapper.orderByDesc("update_time");
+        }
+        else {
+            wrapper.orderByAsc("update_time");
+        }
         IPage iPage = new Page(currentPage, pageSize);
         blogDao.selectPage(iPage, wrapper);
         return iPage.getRecords();
