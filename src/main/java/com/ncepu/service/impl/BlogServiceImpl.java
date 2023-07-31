@@ -52,7 +52,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         QueryWrapper<Blog> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "title", "description", "image_path", "publish_time", "update_time",
                 "category", "views_count")
-                .orderBy(true,false, "update_time");
+                .orderBy(true,false, "publish_time");
         IPage iPage = new Page(page, 12);
         blogDao.selectPage(iPage, queryWrapper);
         return iPage.getRecords();
