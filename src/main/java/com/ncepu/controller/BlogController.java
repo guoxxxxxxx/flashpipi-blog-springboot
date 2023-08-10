@@ -104,7 +104,7 @@ public class BlogController {
     }
 
     /**
-     * 查询合集数量
+     * 查询所有合集数量
      */
     @GetMapping("/getCollectionCount")
     public List<Map<String, Object>> getCollectionCount(){
