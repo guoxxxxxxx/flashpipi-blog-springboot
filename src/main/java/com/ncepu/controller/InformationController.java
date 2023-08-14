@@ -1,5 +1,6 @@
 package com.ncepu.controller;
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
 import com.ncepu.entity.Information;
 import com.ncepu.service.IInformationService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,6 +29,7 @@ public class InformationController {
      * 更新小站资讯
      */
     @GetMapping("/updateInfo")
+    @SaCheckPermission("user:modify")
     public long updateInfo(@RequestParam String url, @RequestParam String notice){
         return service.updateInfo(url, notice);
     }

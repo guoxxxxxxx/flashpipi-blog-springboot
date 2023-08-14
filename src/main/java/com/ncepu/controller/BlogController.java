@@ -1,6 +1,9 @@
 package com.ncepu.controller;
 
 
+import cn.dev33.satoken.annotation.SaCheckPermission;
+import cn.dev33.satoken.annotation.SaCheckRole;
+import cn.dev33.satoken.annotation.SaMode;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -133,6 +136,7 @@ public class BlogController {
      * 查询指定数量的博客(不包含content)
      */
     @GetMapping("/getShortBlogsList")
+    @SaCheckPermission(value = {"user:modify", "user:see"}, mode = SaMode.OR)
     public List<Blog> getShortBlogsList(@RequestParam int currentPage, @RequestParam int pageSize){
         return blogService.getShortBlogsList(currentPage, pageSize);
     }
@@ -141,6 +145,7 @@ public class BlogController {
      * 根据id删除博客
      */
     @GetMapping("/deleteById")
+    @SaCheckPermission("user:modify")
     public long deleteById(@RequestParam int id){
         if(blogService.removeById(id)){
             // 返回1 删除成功
@@ -156,6 +161,7 @@ public class BlogController {
      * 更新博客
      */
     @PostMapping("/updateBlog")
+    @SaCheckPermission("user:modify")
     public long updateBlog(@RequestBody Blog blog){
         return blogService.updateBlog(blog);
     }
@@ -164,6 +170,7 @@ public class BlogController {
      * 上传新博客
      */
     @PostMapping("/uploadBlog")
+    @SaCheckPermission("user:modify")
     public long uploadBlog(@RequestBody Blog blog){
         return blogService.uploadBlog(blog);
     }

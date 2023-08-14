@@ -1,5 +1,8 @@
 package com.ncepu.controller;
 
+import cn.dev33.satoken.annotation.SaCheckLogin;
+import cn.dev33.satoken.stp.StpUtil;
+import com.ncepu.VO.UserVO;
 import com.ncepu.entity.User;
 import com.ncepu.service.IUserService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,8 +37,16 @@ public class UserController {
      * 用户登录
      */
     @PostMapping("/login")
-    public long login(@RequestParam String email, @RequestParam String password){
-        return userService.login(email, password);
+    public UserVO login(@RequestParam String email, @RequestParam String password){
+        long login = userService.login(email, password);
+        if (login == 1){
+            User user = userService.getUserInfo(email);
+            StpUtil.login(user.getId());
+        }
+        UserVO userVO = new UserVO();
+        userVO.setStatus(login);
+        userVO.setToken(StpUtil.getTokenInfo());
+        return userVO;
     }
 
     /**
@@ -50,7 +61,18 @@ public class UserController {
      * 修改用户信息
      */
     @PostMapping("/modifyInfo")
+    @SaCheckLogin()
     public long modifyInfo(@RequestBody User user){
         return userService.modifyInfo(user);
+    }
+
+    /**
+     * 退出
+     */
+    @SaCheckLogin()
+    @GetMapping("exit")
+    public long exit(){
+        StpUtil.logout();
+        return 1;
     }
 }

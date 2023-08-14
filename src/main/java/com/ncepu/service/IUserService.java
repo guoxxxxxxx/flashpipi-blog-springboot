@@ -29,4 +29,9 @@ public interface IUserService extends IService<User> {
      * 修改用户信息
      */
     long modifyInfo(User user);
+
+    /**
+     * 根据id查询用户信息
+     */
+    User getUserInfoById(Integer id);
 }

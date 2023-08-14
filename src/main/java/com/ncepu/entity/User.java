@@ -11,5 +11,6 @@ public class User {
     private String email;
     private String password;
     private String avatar;
+    private Integer rankLevel;
     private static final long serialVersionUID = 1L;
 }

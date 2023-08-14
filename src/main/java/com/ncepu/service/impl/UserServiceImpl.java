@@ -92,4 +92,9 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     public long modifyInfo(User user) {
         return userDao.update(user, new QueryWrapper<User>().eq("email", user.getEmail()));
     }
+
+    @Override
+    public User getUserInfoById(Integer id) {
+        return userDao.selectById(id);
+    }
 }
