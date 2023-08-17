@@ -190,4 +190,20 @@ public class BlogController {
     public List<Blog> search(@RequestParam String keywords){
         return blogService.search(keywords);
     }
+
+    /**
+     * 查询合集名称
+     */
+    @GetMapping("/getCollectionsName")
+    public List<Blog> getCollectionsName(){
+        return blogService.getCollectionsName();
+    }
+
+    /**
+     * 根据合集名称查询数量
+     */
+    @GetMapping("/getCollectionCountByName")
+    public long getCollectionCountByName(@RequestParam String collection){
+        return blogService.getCollectionCountByName(collection);
+    }
 }

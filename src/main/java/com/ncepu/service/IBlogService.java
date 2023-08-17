@@ -92,4 +92,14 @@ public interface IBlogService extends IService<Blog> {
      * 搜索
      */
     List<Blog> search(String keywords);
+
+    /**
+     * 查询合集名称
+     */
+    List<Blog> getCollectionsName();
+
+    /**
+     * 查询指定合集的数量
+     */
+    long getCollectionCountByName(String collection);
 }
