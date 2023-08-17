@@ -194,4 +194,21 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         }
         return blogList;
     }
+
+    @Override
+    public List<Blog> getCollectionsName() {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
+        wrapper.select("collection");
+        wrapper.groupBy("collection");
+        wrapper.ne("collection", "");
+        List<Blog> blogs = blogDao.selectList(wrapper);
+        return blogs;
+    }
+
+    @Override
+    public long getCollectionCountByName(String collection) {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
+        wrapper.eq("collection", collection);
+        return blogDao.selectCount(wrapper);
+    }
 }
