@@ -11,6 +11,7 @@ import com.ncepu.entity.User;
 import com.ncepu.service.IUserService;
 import com.ncepu.utils.mail.RandomCodeUtils;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.stereotype.Service;
 
 @Service
@@ -19,20 +20,25 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     UserDao userDao;
     @Autowired
     IRandomCodeService randomCodeService;
+    @Autowired
+    private StringRedisTemplate redisTemplate;
 
     @Override
     public long register(String email, String password, String code) {
         User user = new User();
         user.setEmail(email);
         user.setPassword(password);
-        RandomCode codeByEmail = randomCodeService.getCodeByEmail(user.getEmail());
-        if (!codeByEmail.getCode().equals(code)){
+//        RandomCode codeByEmail = randomCodeService.getCodeByEmail(user.getEmail());
+        // 从redis中查询验证码
+        String cacheCode = redisTemplate.opsForValue().get(email);
+        if (cacheCode == null || !cacheCode.equals(code)){
             // 返回-2说明验证码错误
             return -2;
         }
         else {
             // 删除记录
-            randomCodeService.removeById(codeByEmail);
+//            randomCodeService.removeById(codeByEmail);
+            redisTemplate.delete(email);    // 删除redis中的缓存
             // 对用户密码进行加密
             user.setPassword(MD5Utils.getMD5(user.getPassword()));
             // 检测该邮箱是否已经被注册
@@ -70,11 +76,13 @@ public class UserServiceImpl extends ServiceImpl<UserDao, User> implements IUser
     @Override
     public long modifyPassword(String email, String newPassword, String code) {
         // 验证验证码是否正确
-        RandomCode codeByEmail = randomCodeService.getCodeByEmail(email);
-        if(codeByEmail!=null && codeByEmail.getCode().equals(code)){
+//        RandomCode codeByEmail = randomCodeService.getCodeByEmail(email);
+        // 从redis中查询验证码
+        String cacheCode = redisTemplate.opsForValue().get(email);
+        if(cacheCode!=null && cacheCode.equals(code)){
             User user = new User();
             user.setPassword(MD5Utils.getMD5(newPassword));
-            randomCodeService.remove(new QueryWrapper<RandomCode>().eq("email", email));
+//            randomCodeService.remove(new QueryWrapper<RandomCode>().eq("email", email));
             return userDao.update(user, new QueryWrapper<User>().eq("email", email));
         }
         else {
