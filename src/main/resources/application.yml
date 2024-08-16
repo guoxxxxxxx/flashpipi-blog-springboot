@@ -11,9 +11,9 @@ spring:
       host: 192.168.247.133
       port: 6379
       connect-timeout: 10s
-mybatis-plus:
-  configuration:
-    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+#mybatis-plus:
+#  configuration:
+#    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 
 sa-token:
   # token 名称（同时也是 cookie 名称）

@@ -4,10 +4,14 @@ package com.ncepu.controller;
 import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaCheckRole;
 import cn.dev33.satoken.annotation.SaMode;
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
+import com.ncepu.common.CommonResult;
+import com.ncepu.common.ann.Logger;
 import com.ncepu.entity.Blog;
+import com.ncepu.entity.User;
 import com.ncepu.service.IBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
@@ -24,9 +28,22 @@ public class BlogController {
     private IBlogService blogService;
 
     /**
+     * 测试
+     */
+    @Logger("测试方法")
+    @PostMapping("/test")
+    public CommonResult<Object> test(@RequestBody User user){
+        Map<String, String> result = new HashMap<>();
+        result.put("name", "json");
+        result.put("userInfo", JSON.toJSONString(user));
+        return new CommonResult<>().success().data(result).message("查询数据成功");
+    }
+
+    /**
      * 获取博客列表-分页获取
      */
     @GetMapping("/getAllBlogs")
+    @Logger("获取博客列表")
     public List<Blog> getAllBlogs(@RequestParam int page){
         return blogService.getAllBlogs(page);
     }
