@@ -9,7 +9,6 @@ package com.ncepu.common.filter;
 
 import com.ncepu.common.CommonResult;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 
