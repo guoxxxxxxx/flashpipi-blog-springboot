@@ -1,6 +1,7 @@
 package com.ncepu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -92,4 +93,6 @@ public interface IBlogService extends IService<Blog> {
      * 搜索
      */
     List<Blog> search(String keywords);
+
+    Map<String, Object> getBlogs(BlogQueryParams params);
 }

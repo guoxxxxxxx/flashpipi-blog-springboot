@@ -5,6 +5,7 @@ import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
 import com.ncepu.dao.BlogDao;
+import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
 import com.ncepu.utils.DateUtils;
@@ -12,6 +13,8 @@ import com.ncepu.utils.SearchUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -162,14 +165,14 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
 
     @Override
     public long updateBlog(Blog blog) {
-        blog.setUpdateTime(DateUtils.getCurrentTime());
+        blog.setUpdateTime(new Date());
         return blogDao.updateById(blog);
     }
 
     @Override
     public long uploadBlog(Blog blog) {
-        blog.setPublishTime(DateUtils.getCurrentTime());
-        blog.setUpdateTime(DateUtils.getCurrentTime());
+        blog.setPublishTime(new Date());
+        blog.setUpdateTime(new Date());
         return blogDao.insert(blog);
     }
 
@@ -177,7 +180,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     public String getLastUpdateTime() {
         Blog blog = blogDao.selectOne(new QueryWrapper<Blog>().orderBy(true, false, "update_time")
                 .last("limit 1"));
-        return blog.getUpdateTime();
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        return simpleDateFormat.format(blog.getUpdateTime());
     }
 
     @Override
@@ -193,5 +197,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
             blogList.get(i).setTitle(SearchUtils.highLight(blogList.get(i).getTitle(), keywords));
         }
         return blogList;
+    }
+
+    @Override
+    public Map<String, Object> getBlogs(BlogQueryParams params) {
+        return null;
     }
 }

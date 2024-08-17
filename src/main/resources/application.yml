@@ -11,7 +11,11 @@ spring:
       host: 192.168.247.133
       port: 6379
       connect-timeout: 10s
-#mybatis-plus:
+  jpa:
+    hibernate:
+      ddl-auto: update
+mybatis-plus:
+#  config-location: classpath:mapper/*.xml
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
 

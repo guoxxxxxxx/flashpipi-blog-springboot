@@ -5,7 +5,7 @@
  * @Description:
  */
 
-package com.ncepu.common;
+package com.ncepu.common.result;
 
 import lombok.Data;
 
