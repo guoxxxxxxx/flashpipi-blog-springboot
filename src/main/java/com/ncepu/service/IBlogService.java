@@ -94,5 +94,5 @@ public interface IBlogService extends IService<Blog> {
      */
     List<Blog> search(String keywords);
 
-    Map<String, Object> getBlogs(BlogQueryParams params);
+    Object getBlogs(BlogQueryParams params);
 }

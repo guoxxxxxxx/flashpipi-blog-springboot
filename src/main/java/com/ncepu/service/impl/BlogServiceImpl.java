@@ -4,6 +4,7 @@ import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
 import com.baomidou.mybatisplus.extension.service.impl.ServiceImpl;
+import com.ncepu.common.result.PageResult;
 import com.ncepu.dao.BlogDao;
 import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
@@ -200,7 +201,16 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     }
 
     @Override
-    public Map<String, Object> getBlogs(BlogQueryParams params) {
-        return null;
+    public Object getBlogs(BlogQueryParams params) {
+        if (params.getPageSize() == null || params.getPageNumber() == null){
+            Map<String, Object> result = new HashMap<>();
+            List<Blog> blogs = baseMapper.queryByCondition(params);
+            result.put("blogs", blogs);
+            return result;
+        }
+        else {
+            IPage<Blog> blogIPage = baseMapper.queryByCondition(new Page<>(params.getPageNumber(), params.getPageSize()), params);
+            return new PageResult<>(blogIPage);
+        }
     }
 }

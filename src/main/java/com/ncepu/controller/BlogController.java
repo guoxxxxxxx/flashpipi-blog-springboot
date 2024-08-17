@@ -192,8 +192,9 @@ public class BlogController {
 
     @PostMapping("/getBlogs")
     @Logger("分页获取博客数据")
-    public CommonResult<Object> getBlogs(@RequestBody BlogQueryParams params){
-        blogService.getBlogs(params);
-        return null;
+    public CommonResult<Object> getBlogs(@RequestBody(required = false) BlogQueryParams params){
+        if (params == null) params = new BlogQueryParams();
+        Object result = blogService.getBlogs(params);
+        return new CommonResult<>().success().data(result).message("查询信息成功");
     }
 }

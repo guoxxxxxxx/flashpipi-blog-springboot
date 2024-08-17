@@ -7,8 +7,12 @@ import com.ncepu.entity.Blog;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
 
+import java.util.List;
+
 @Mapper
 public interface BlogDao extends BaseMapper<Blog> {
 
-    IPage<Blog> queryByCondition(@Param("params") BlogQueryParams params);
+    List<Blog> queryByCondition(@Param("params") BlogQueryParams params);
+
+    IPage<Blog> queryByCondition(IPage<Blog> page, @Param("params") BlogQueryParams params);
 }

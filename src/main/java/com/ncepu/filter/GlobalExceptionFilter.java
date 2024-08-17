@@ -19,7 +19,7 @@ public class GlobalExceptionFilter{
     @ExceptionHandler({Exception.class})
     public CommonResult<Object> handleException(Exception e){
         log.error(e.toString());
-        return new CommonResult<>().fail().message(e.toString());
+        return new CommonResult<>().fail().message(e.toString()).data("INTERNAL SERVER ERROR");
     }
 
 

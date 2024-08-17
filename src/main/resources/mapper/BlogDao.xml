@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ncepu.dao.BlogDao">
+
+    <resultMap type="com.ncepu.entity.Blog" id="BlogMap">
+        <result property="id" column="id" jdbcType="INTEGER"/>
+        <result property="title" column="title" jdbcType="VARCHAR"/>
+        <result property="description" column="description" jdbcType="VARCHAR"/>
+        <result property="imagePath" column="image_path" jdbcType="VARCHAR"/>
+        <result property="publishTime" column="publish_time" jdbcType="TIMESTAMP"/>
+        <result property="updateTime" column="update_time" jdbcType="TIMESTAMP"/>
+        <result property="category" column="category" jdbcType="VARCHAR"/>
+        <result property="collection" column="collection" jdbcType="VARCHAR"/>
+        <result property="viewsCount" column="views_count" jdbcType="INTEGER"/>
+        <result property="content" column="content" jdbcType="VARCHAR"/>
+        <result property="sortId" column="sort_id" jdbcType="INTEGER"/>
+    </resultMap>
+
+    <!-- 批量插入 -->
+    <insert id="insertBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into blog_flash_pipi.blog(title, description, image_path, publish_time, update_time, category, collection, views_count, content, sort_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+        (#{entity.title}, #{entity.description}, #{entity.imagePath}, #{entity.publishTime}, #{entity.updateTime}, #{entity.category}, #{entity.collection}, #{entity.viewsCount}, #{entity.content}, #{entity.sortId})
+        </foreach>
+    </insert>
+    <!-- 批量插入或按主键更新 -->
+    <insert id="insertOrUpdateBatch" keyProperty="id" useGeneratedKeys="true">
+        insert into blog_flash_pipi.blog(title, description, image_path, publish_time, update_time, category, collection, views_count, content, sort_id)
+        values
+        <foreach collection="entities" item="entity" separator=",">
+            (#{entity.title}, #{entity.description}, #{entity.imagePath}, #{entity.publishTime}, #{entity.updateTime}, #{entity.category}, #{entity.collection}, #{entity.viewsCount}, #{entity.content}, #{entity.sortId})
+        </foreach>
+        on duplicate key update
+         title = values(title) , description = values(description) , image_path = values(image_path) , publish_time = values(publish_time) , update_time = values(update_time) , category = values(category) , collection = values(collection) , views_count = values(views_count) , content = values(content) , sort_id = values(sort_id)     </insert>
+
+    <select id="queryByCondition" resultType="com.ncepu.entity.Blog" parameterType="com.ncepu.dto.BlogQueryParams">
+        select * from blog
+        where delete_bit is false
+        <if test="params.id != null">
+            and id = #{params.id}
+        </if>
+        <if test="params.title != null">
+            and title = #{params.title}
+        </if>
+        <if test="params.description != null">
+            and description = #{params.description}
+        </if>
+        <if test="params.imagePath != null">
+            and image_path = #{params.imagePath}
+        </if>
+        <if test="params.publishTime != null">
+            and publish_time = #{params.publishTime}
+        </if>
+        <if test="params.startPublishTime != null and params.endPublishTime != null">
+            and publish_time between #{params.startPublishTime} and #{params.endPublishTime}
+        </if>
+        <if test="params.updateTime != null">
+            and update_time = #{params.updateTime}
+        </if>
+        <if test="params.startUpdateTime != null and params.endUpdateTime != null">
+            and update_time between #{params.startUpdateTime} and #{params.endUpdateTime}
+        </if>
+        <if test="params.category != null">
+            and category = #{params.category}
+        </if>
+        <if test="params.collection != null">
+            and collecetion = #{params.collection}
+        </if>
+        <if test="params.viewsCount != null">
+            and views_count = #{params.viewsCount}
+        </if>
+        <if test="params.content != null">
+            and content = #{params.content}
+        </if>
+        <if test="params.sortId != null">
+            and sort_id = #{params.sortId}
+        </if>
+        <if test="params.sortKey != null">
+            order by #{params.sortKey}
+            <choose>
+                <when test="params.desc == true">
+                    desc
+                </when>
+                <otherwise>
+                    asc
+                </otherwise>
+            </choose>
+        </if>
+    </select>
+
+</mapper>
+

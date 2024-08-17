@@ -10,14 +10,24 @@ package com.ncepu.common.result;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import lombok.Data;
 
+import java.util.List;
+
 @Data
-public class PageResult<T> {
+public class PageResult<T>{
+
+    public PageResult(IPage<T> page){
+        this.total = page.getTotal();
+        this.currentPage = page.getCurrent();
+        this.pageSize = page.getSize();
+        this.data = page.getRecords();
+    }
+
     // 总条数
-    private Integer total;
+    private Long total;
     // 当前页码
-    private Integer currentPage;
+    private Long currentPage;
     // 页面大小
-    private Integer pageSize;
+    private Long pageSize;
     // 数据
-    private IPage<T> data;
+    private List<T> data;
 }
