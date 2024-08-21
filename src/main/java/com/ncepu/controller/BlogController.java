@@ -5,6 +5,7 @@ import cn.dev33.satoken.annotation.SaCheckPermission;
 import cn.dev33.satoken.annotation.SaMode;
 import com.ncepu.common.result.CommonResult;
 import com.ncepu.common.ann.Logger;
+import com.ncepu.common.result.PageResult;
 import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
@@ -26,8 +27,9 @@ public class BlogController {
      */
     @GetMapping("/getAllBlogs")
     @Logger("获取博客列表")
-    public List<Blog> getAllBlogs(@RequestParam int page){
-        return blogService.getAllBlogs(page);
+    public CommonResult<Object> getAllBlogs(@RequestParam int pageNumber, @RequestParam int pageSize){
+        PageResult<Blog> pageResult = blogService.getAllBlogs(pageNumber, pageSize);
+        return new CommonResult<>().data(pageResult).success().message("获取信息成功");
     }
 
     /**

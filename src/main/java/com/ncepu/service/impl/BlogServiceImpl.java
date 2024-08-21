@@ -11,6 +11,7 @@ import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
 import com.ncepu.utils.DateUtils;
 import com.ncepu.utils.SearchUtils;
+import com.ncepu.utils.template.ExternalRestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -21,6 +22,8 @@ import java.util.*;
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlogService {
     @Autowired
     BlogDao blogDao;
+    @Autowired
+    ExternalRestTemplate externalRestTemplate;
     @Override
     public List<Map<String, Object>> getBlogCategoryList(int page) {
         if (page != -1){
@@ -49,14 +52,13 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     }
 
     @Override
-    public List<Blog> getAllBlogs(int page) {
+    public PageResult<Blog> getAllBlogs(int pageNumber, int pageSize) {
         QueryWrapper<Blog> queryWrapper = new QueryWrapper<>();
         queryWrapper.select("id", "title", "description", "image_path", "publish_time", "update_time",
                 "category", "views_count")
                 .orderBy(true,false, "publish_time");
-        IPage iPage = new Page(page, 12);
-        blogDao.selectPage(iPage, queryWrapper);
-        return iPage.getRecords();
+        Page<Blog> blogPage = baseMapper.selectPage(new Page<>(pageNumber, pageSize), queryWrapper);
+        return new PageResult<>(blogPage);
     }
 
     @Override
@@ -173,6 +175,10 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         blog.setSortId(Integer.parseInt(String.valueOf(count)));
         blog.setPublishTime(new Date());
         blog.setUpdateTime(new Date());
+        if(blog.getImagePath() == null || blog.getImagePath().equals("")){
+            String picUrl = externalRestTemplate.getRandomPicUrl();
+            blog.setImagePath(picUrl);
+        }
         return blogDao.insert(blog);
     }
 

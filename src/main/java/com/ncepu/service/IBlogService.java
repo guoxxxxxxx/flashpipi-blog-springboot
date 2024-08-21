@@ -1,6 +1,7 @@
 package com.ncepu.service;
 
 import com.baomidou.mybatisplus.extension.service.IService;
+import com.ncepu.common.result.PageResult;
 import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -22,7 +23,7 @@ public interface IBlogService extends IService<Blog> {
     /**
      * 获取博客列表-分页获取
      */
-    List<Blog> getAllBlogs(int page);
+    PageResult<Blog> getAllBlogs(int pageNumber, int pageSize);
 
     /**
      * 查询博客种类数量
