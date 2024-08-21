@@ -1,7 +1,7 @@
 version: '3.8'
 services:
   mysql:
-    container_name: flashpipi-blog-mysql:1.0
+    container_name: flashpipi-blog-mysql
     image: mysql:8.0
     ports:
       - "3306:3306"
@@ -22,7 +22,7 @@ services:
       MYSQL_ROOT_PASSWORD: 123456
 
   redis:
-    container_name: flashpipi-blog-redis:1.0
+    container_name: flashpipi-blog-redis
     image: redis:7.4.0
     ports:
       - "6379:6379"
@@ -31,12 +31,12 @@ services:
     command: "redis-server"
 
   web:
-    container_name: flashpipi-blog-web:1.0
+    container_name: flashpipi-blog-web
     build:
       context: .
       dockerfile: Dockerfile-web
     ports:
-      - 8080:8080
+      - "8080:8080"
     volumes:
       - /conf/flashpipi-blog:/conf/flashpipi-blog
     command:
@@ -49,14 +49,15 @@ services:
       - redis
 
   frontend:
-    container_name: flashpipi-blog-frontend:1.0
+    container_name: flashpipi-blog-frontend
     build:
       context: .
       dockerfile: Dockerfile-vue
     ports:
-      - 80:80
+      - "80:80"
     volumes:
       - /resource/flashpipi-blog/frontend:/usr/share/nginx/html
+      - /conf/flashpipi-blog/nginx:/etc/nginx
     depends_on:
       - web
 

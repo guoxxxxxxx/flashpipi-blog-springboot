@@ -95,4 +95,10 @@ public interface IBlogService extends IService<Blog> {
     List<Blog> search(String keywords);
 
     Object getBlogs(BlogQueryParams params);
+
+    /**
+     *  获取集合名称列表
+     * @return
+     */
+    List<String> getCollectionsName();
 }

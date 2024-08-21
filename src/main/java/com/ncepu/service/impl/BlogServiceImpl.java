@@ -15,10 +15,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlogService {
@@ -172,6 +169,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
 
     @Override
     public long uploadBlog(Blog blog) {
+        Long count = baseMapper.selectCount(new QueryWrapper<>());
+        blog.setSortId(Integer.parseInt(String.valueOf(count)));
         blog.setPublishTime(new Date());
         blog.setUpdateTime(new Date());
         return blogDao.insert(blog);
@@ -212,5 +211,17 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
             IPage<Blog> blogIPage = baseMapper.queryByCondition(new Page<>(params.getPageNumber(), params.getPageSize()), params);
             return new PageResult<>(blogIPage);
         }
+    }
+
+    @Override
+    public List<String> getCollectionsName() {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
+        wrapper.select("collection").groupBy("collection");
+        List<Blog> blogs = baseMapper.selectList(wrapper);
+        List<String> result = new ArrayList<>();
+        for (Blog e : blogs){
+            result.add(e.getCollection());
+        }
+        return result;
     }
 }

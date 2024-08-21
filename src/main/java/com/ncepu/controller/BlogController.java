@@ -197,4 +197,14 @@ public class BlogController {
         Object result = blogService.getBlogs(params);
         return new CommonResult<>().success().data(result).message("查询信息成功");
     }
+
+    /**
+     * 获取集合列表
+     */
+    @GetMapping("/getCollectionsName")
+    @Logger("获取集合列表")
+    public CommonResult<Object> getCollectionsName(){
+        List<String> result = blogService.getCollectionsName();
+        return new CommonResult<>().data(result).success().message("查询信息成功");
+    }
 }

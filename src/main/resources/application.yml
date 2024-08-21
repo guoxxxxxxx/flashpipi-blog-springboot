@@ -8,7 +8,7 @@ spring:
   data:
     redis:
       database: 1
-      host: 192.168.247.133
+      host: 192.168.247.137
       port: 6379
       connect-timeout: 10s
   jpa:
@@ -37,3 +37,5 @@ sa-token:
 
 server:
   port: 8080
+  servlet:
+    context-path: /api/blog
