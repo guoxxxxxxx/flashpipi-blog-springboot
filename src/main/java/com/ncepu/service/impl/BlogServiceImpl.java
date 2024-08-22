@@ -180,6 +180,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         blog.setSortId(Integer.parseInt(String.valueOf(count)));
         if(blog.getPublishTime() == null)
             blog.setPublishTime(new Date());
+        if (blog.getDescription() == null)
+            blog.setDescription(blog.getTitle());
         blog.setUpdateTime(new Date());
         if(blog.getImagePath() == null || blog.getImagePath().equals("")){
             String picUrl = externalRestTemplate.getRandomPicUrl();
@@ -242,7 +244,7 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         String filename = textFile.getOriginalFilename();
         assert filename != null;
         String fileType = filename.split("\\.")[1];
-        assert filename.equals("md") || filename.equals("txt");
+        assert fileType.equals("md") || fileType.equals("txt");
         String content = new String(textFile.getBytes());
         String title = content.substring(content.indexOf("# ")).split("\n")[0].replace("# ", "");
         Blog blog = new Blog();

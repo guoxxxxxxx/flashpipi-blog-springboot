@@ -8,7 +8,7 @@ services:
       - /project/flashpipi-blog/mysql/logs:/logs
       - /project/flashpipi-blog/mysql/data:/var/lib/mysql
     ports:
-      - "6379:6379"
+      - "3306:3306"
     command: [
       'mysqld',
       '--innodb-buffer-pool-size=80M',
@@ -34,13 +34,14 @@ services:
       context: .
       dockerfile: Dockerfile-web
     volumes:
-      - /project/flashpipi-blog/web/conf:/app/conf/flashpipi-blog
+      - /project/flashpipi-blog/web/conf:/app/conf
       - /project/flashpipi-blog/web/jar:/app/jar
     command:
       - "java"
+      - "-Dfile.encoding=UTF-8"
       - "-jar"
-      - "flashpipi-server.jar"
-      - "--spring.config.location=/conf/application.yml"
+      - "jar/flashpipi-server.jar"
+      - "--spring.config.location=conf/application.yml"
     depends_on:
       - mysql
       - redis
@@ -54,7 +55,7 @@ services:
       - "80:80"
     volumes:
       - /project/flashpipi-blog/resource/frontend:/usr/share/nginx/html
-      - /project/flashpipi-blog/nginx/conf/nginx:/etc/nginx
+      - /project/flashpipi-blog/nginx/conf:/etc/nginx
     depends_on:
       - web
 

@@ -45,4 +45,4 @@ server:
     context-path: /api/blog
 
 external-api:
-  randomPic: https://api.btstu.cn/sjbz/api.php?lx=dongman&format=images
+  randomPic: https://api.btstu.cn/sjbz/api.php
