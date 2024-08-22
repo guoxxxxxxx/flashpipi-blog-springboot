@@ -3,12 +3,10 @@ services:
   mysql:
     container_name: flashpipi-blog-mysql
     image: mysql:8.0
-    ports:
-      - "3306:3306"
     volumes:
-      - /mysql/conf:/etc/mysql/conf.d
-      - /mysql/logs:/logs
-      - /mysql/data:/var/lib/mysql
+      - /project/flashpipi-blog/mysql/conf:/etc/mysql/conf.d
+      - /project/flashpipi-blog/mysql/logs:/logs
+      - /project/flashpipi-blog/mysql/data:/var/lib/mysql
     command: [
       'mysqld',
       '--innodb-buffer-pool-size=80M',
@@ -24,8 +22,6 @@ services:
   redis:
     container_name: flashpipi-blog-redis
     image: redis:7.4.0
-    ports:
-      - "6379:6379"
     volumes:
       - /redis/data:/data
     command: "redis-server"
@@ -35,8 +31,6 @@ services:
     build:
       context: .
       dockerfile: Dockerfile-web
-    ports:
-      - "8080:8080"
     volumes:
       - /conf/flashpipi-blog:/conf/flashpipi-blog
     command:

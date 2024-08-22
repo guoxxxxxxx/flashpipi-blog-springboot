@@ -178,7 +178,8 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     public long uploadBlog(Blog blog) {
         Long count = baseMapper.selectCount(new QueryWrapper<>());
         blog.setSortId(Integer.parseInt(String.valueOf(count)));
-        blog.setPublishTime(new Date());
+        if(blog.getPublishTime() == null)
+            blog.setPublishTime(new Date());
         blog.setUpdateTime(new Date());
         if(blog.getImagePath() == null || blog.getImagePath().equals("")){
             String picUrl = externalRestTemplate.getRandomPicUrl();

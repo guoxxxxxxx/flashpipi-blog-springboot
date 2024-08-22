@@ -25,13 +25,21 @@ public class GlobalExceptionFilter{
     @ExceptionHandler({Exception.class})
     public ResponseEntity<Object> handleException(Exception e){
         log.error(e.toString());
-        return new ResponseEntity<>(e.toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 500);
+        response.put("message", e.toString());
+        response.put("status", false);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
     @ExceptionHandler(UndeclaredThrowableException.class)
     public ResponseEntity<Object>  handleUndeclaredThrowableException(UndeclaredThrowableException e){
         log.error(e.getCause().toString());
-        return new ResponseEntity<>(e.getCause().toString(), HttpStatus.INTERNAL_SERVER_ERROR);
+        Map<String, Object> response = new HashMap<>();
+        response.put("code", 500);
+        response.put("message", e.getCause().toString());
+        response.put("status", false);
+        return new ResponseEntity<>(response, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 
 

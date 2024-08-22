@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -217,8 +218,10 @@ public class BlogController {
      */
     @PostMapping("/parseFile")
     @Logger("解析文件内容")
-    public CommonResult<Object> parseFile(@RequestParam("textFile") MultipartFile textFile) throws IOException {
+    public CommonResult<Object> parseFile(@RequestParam("textFile") MultipartFile textFile,
+                                          @RequestParam("lastUpdateTime") String lastUpdateTime) throws IOException {
         Blog blog = blogService.parseFileContent(textFile);
+        blog.setPublishTime(new Date(Long.parseLong(lastUpdateTime)));
         return new CommonResult<>().success().message("解析数据成功").data(blog);
     }
 
