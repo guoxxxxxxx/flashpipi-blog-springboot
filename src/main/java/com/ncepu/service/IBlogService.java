@@ -4,6 +4,8 @@ import com.baomidou.mybatisplus.extension.service.IService;
 import com.ncepu.common.result.PageResult;
 import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
+import jakarta.servlet.http.HttpServletResponse;
+import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
@@ -129,4 +131,16 @@ public interface IBlogService extends IService<Blog> {
      * @return
      */
     String getRandomImgUrl();
+
+    /**
+     * 下载指定id的文章
+     * @param id
+     */
+    void downloadById(Integer id, HttpServletResponse response) throws IOException;
+
+    /**
+     * 下载所有文章到zip
+     * @param response
+     */
+    void downloadZip(HttpServletResponse response) throws IOException;
 }

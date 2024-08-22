@@ -56,19 +56,19 @@ public class Blog {
     /**
      * 所属类别
      */
-    @Column(name = "category", columnDefinition = "varchar(128)")
+    @Column(name = "category", columnDefinition = "varchar(128) default '其他'")
     private String category;
 
     /**
      * 所属集合
      */
-    @Column(name = "collection", columnDefinition = "varchar(128)")
+    @Column(name = "collection", columnDefinition = "varchar(128) default '其他'")
     private String collection;
 
     /**
      * 浏览量
      */
-    @Column(name = "views_count", columnDefinition = "int")
+    @Column(name = "views_count", columnDefinition = "int default 0")
     private Integer viewsCount;
 
     /**

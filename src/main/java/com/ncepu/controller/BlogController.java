@@ -9,6 +9,7 @@ import com.ncepu.common.result.PageResult;
 import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
@@ -254,4 +255,23 @@ public class BlogController {
         String newUrl = blogService.getRandomImgUrl();
         return new CommonResult<>().data(newUrl).success().message("获取信息成功");
     }
+
+    /**
+     * 下载指定id的文章
+     */
+    @GetMapping("/downloadById")
+    @Logger("下载指定id的文章")
+    public void downloadById(@RequestParam Integer id, HttpServletResponse response) throws IOException {
+        blogService.downloadById(id, response);
+    }
+
+    /**
+     * 下载全部文章到zip
+     */
+    @GetMapping("/downloadZip")
+    @Logger("下载全部文章")
+    public void downloadZip(HttpServletResponse response) throws IOException {
+        blogService.downloadZip(response);
+    }
+
 }

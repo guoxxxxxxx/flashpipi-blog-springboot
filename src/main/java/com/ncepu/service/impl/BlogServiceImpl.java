@@ -1,5 +1,6 @@
 package com.ncepu.service.impl;
 
+import com.alibaba.fastjson2.JSON;
 import com.baomidou.mybatisplus.core.conditions.query.QueryWrapper;
 import com.baomidou.mybatisplus.core.metadata.IPage;
 import com.baomidou.mybatisplus.extension.plugins.pagination.Page;
@@ -12,13 +13,29 @@ import com.ncepu.service.IBlogService;
 import com.ncepu.utils.DateUtils;
 import com.ncepu.utils.SearchUtils;
 import com.ncepu.utils.template.ExternalRestTemplate;
+import jakarta.servlet.ServletOutputStream;
+import jakarta.servlet.http.HttpServletRequest;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.core.io.ByteArrayResource;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
+import org.springframework.util.FileSystemUtils;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.io.IOException;
+import java.io.*;
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 @Service
 public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlogService {
@@ -271,5 +288,71 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     @Override
     public String getRandomImgUrl() {
         return externalRestTemplate.getRandomPicUrl();
+    }
+
+    @Override
+    public void downloadById(Integer id, HttpServletResponse response) throws IOException {
+        Blog blog = baseMapper.selectById(id);
+        Map<String, Object> detail = new HashMap<>();
+        detail.put("category", blog.getCategory());
+        detail.put("collection", blog.getCollection());
+        detail.put("description", blog.getDescription());
+        SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        String filename = blog.getTitle().replace(" ", "").replace("\r", "") + "--" + simpleDateFormat.format(blog.getPublishTime()) + ".md";
+        String content = JSON.toJSONString(detail) + "\n" + blog.getContent();
+        byte[] bytes = content.getBytes(StandardCharsets.UTF_8);
+        String contentDisposition = "attachment; filename=" + URLEncoder.encode(filename, StandardCharsets.UTF_8);
+        response.setHeader("Content-Disposition", contentDisposition);
+
+        // 设置内容类型
+        response.setContentType("text/plain; charset=UTF-8");
+
+        ServletOutputStream outputStream = response.getOutputStream();
+        outputStream.write(bytes);
+    }
+
+    @Override
+    public void downloadZip(HttpServletResponse response) throws IOException {
+        List<Blog> blogs = baseMapper.selectList(new QueryWrapper<>());
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+        response.setContentType("application/zip");
+        response.setHeader("Content-Disposition", "attachment; filename=flashpipi-blog-" + dateFormat.format(new Date()) + ".zip");
+
+        String tempDir = "./temp/tempFiles/";
+        Path tempDirPath = Paths.get(tempDir);
+        Files.createDirectories(tempDirPath);
+        // 将每个字符串保存到md中
+        for (Blog e : blogs){
+            String filename = (e.getTitle() + "--" + dateFormat.format(e.getPublishTime()) + ".md")
+                    .replace(" ", "").replace("\r", "")
+                    .replace("|", "-");
+            Map<String, Object> prefixMap = new HashMap<>();
+            prefixMap.put("category", e.getCategory());
+            prefixMap.put("collection", e.getCollection());
+            prefixMap.put("description", e.getDescription());
+            try (BufferedWriter writer = new BufferedWriter(new FileWriter(tempDir + filename))){
+                writer.write(JSON.toJSONString(prefixMap) + "\n" + e.getContent());
+            }
+        }
+
+        // 压缩文件
+        try (ZipOutputStream zos = new ZipOutputStream(response.getOutputStream())){
+            Files.walk(tempDirPath).filter(path -> !Files.isDirectory(path)).forEach(
+                    path -> {
+                        ZipEntry zipEntry = new ZipEntry(tempDirPath.relativize(path).toString());
+                        try {
+                            zos.putNextEntry(zipEntry);
+                            Files.copy(path, zos);
+                            zos.closeEntry();
+                        } catch (IOException e) {
+                            e.printStackTrace();
+                        }
+                    }
+            );
+        }
+        finally {
+            // 清理临时文件
+            Files.walk(tempDirPath).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+        }
     }
 }
