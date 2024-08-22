@@ -14,7 +14,9 @@ import com.ncepu.utils.SearchUtils;
 import com.ncepu.utils.template.ExternalRestTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -166,6 +168,9 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     @Override
     public long updateBlog(Blog blog) {
         blog.setUpdateTime(new Date());
+        if (blog.getImagePath().equals("")){
+            blog.setImagePath(externalRestTemplate.getRandomPicUrl());
+        }
         return blogDao.updateById(blog);
     }
 
@@ -229,5 +234,39 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
             result.add(e.getCollection());
         }
         return result;
+    }
+
+    @Override
+    public Blog parseFileContent(MultipartFile textFile) throws IOException {
+        String filename = textFile.getOriginalFilename();
+        assert filename != null;
+        String fileType = filename.split("\\.")[1];
+        assert filename.equals("md") || filename.equals("txt");
+        String content = new String(textFile.getBytes());
+        String title = content.substring(content.indexOf("# ")).split("\n")[0].replace("# ", "");
+        Blog blog = new Blog();
+        blog.setContent(content);
+        blog.setTitle(title);
+        blog.setImagePath(externalRestTemplate.getRandomPicUrl());
+        return blog;
+    }
+
+    @Override
+    public boolean checkBlogExistByTitle(String title) {
+        QueryWrapper<Blog> wrapper = new QueryWrapper<>();
+        wrapper.eq("title", title);
+        Long count = baseMapper.selectCount(wrapper);
+        return !(count == 0);
+    }
+
+    @Override
+    public boolean updateBlogByTitle(Blog blog) {
+        int count = baseMapper.update(blog, new QueryWrapper<Blog>().eq("title", blog.getTitle()));
+        return !(count == 0);
+    }
+
+    @Override
+    public String getRandomImgUrl() {
+        return externalRestTemplate.getRandomPicUrl();
     }
 }

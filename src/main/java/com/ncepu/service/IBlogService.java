@@ -5,7 +5,9 @@ import com.ncepu.common.result.PageResult;
 import com.ncepu.dto.BlogQueryParams;
 import com.ncepu.entity.Blog;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 
@@ -102,4 +104,29 @@ public interface IBlogService extends IService<Blog> {
      * @return
      */
     List<String> getCollectionsName();
+
+    /**
+     * 解析文章内容
+     */
+    Blog parseFileContent(MultipartFile textFile) throws IOException;
+
+    /**
+     * 通过名字检查博客在数据库中是否存在
+     * @param title
+     * @return
+     */
+    boolean checkBlogExistByTitle(String title);
+
+    /**
+     * 通过title对博客进行更新
+     * @param blog
+     * @return
+     */
+    boolean updateBlogByTitle(Blog blog);
+
+    /**
+     * 获取一个随机的图片地址
+     * @return
+     */
+    String getRandomImgUrl();
 }

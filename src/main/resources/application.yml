@@ -14,6 +14,10 @@ spring:
   jpa:
     hibernate:
       ddl-auto: update
+  servlet:
+    multipart:
+      max-file-size: 1024MB
+      max-request-size: 1024MB
 mybatis-plus:
 #  config-location: classpath:mapper/*.xml
 #  configuration:

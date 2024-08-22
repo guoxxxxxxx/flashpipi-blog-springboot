@@ -19,6 +19,7 @@ import org.springframework.stereotype.Component;
 import org.springframework.web.context.request.RequestAttributes;
 import org.springframework.web.context.request.RequestContextHolder;
 import org.springframework.web.context.request.ServletRequestAttributes;
+import org.springframework.web.multipart.MultipartFile;
 
 import java.lang.reflect.Method;
 
@@ -47,7 +48,7 @@ public class LogAspect {
         HttpServletRequest request = attributes.getRequest();
         log.info("请求 --> url: {}, method: {}, ip: {}, class_method: {}, args: {}",
                 request.getRequestURI(), request.getMethod(), request.getRemoteAddr(), joinPoint.getSignature().getDeclaringType().getName()
-                + "." + joinPoint.getSignature().getName(), JSON.toJSON(joinPoint.getArgs()));
+                + "." + joinPoint.getSignature().getName(), joinPoint.getArgs());
     }
 
     @AfterReturning(pointcut = "pointCut()", returning = "result")

@@ -11,7 +11,9 @@ import com.ncepu.entity.Blog;
 import com.ncepu.service.IBlogService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -181,7 +183,7 @@ public class BlogController {
      */
     @GetMapping("/getLastUpdateTime")
     public String getLastUpdateTime(){
-        return blogService.getLastUpdateTime();
+        return blogService.getLastUpdateTime().split(" ")[0];
     }
 
     /**
@@ -208,5 +210,45 @@ public class BlogController {
     public CommonResult<Object> getCollectionsName(){
         List<String> result = blogService.getCollectionsName();
         return new CommonResult<>().data(result).success().message("查询信息成功");
+    }
+
+    /**
+     * 解析前端上传的文件
+     */
+    @PostMapping("/parseFile")
+    @Logger("解析文件内容")
+    public CommonResult<Object> parseFile(@RequestParam("textFile") MultipartFile textFile) throws IOException {
+        Blog blog = blogService.parseFileContent(textFile);
+        return new CommonResult<>().success().message("解析数据成功").data(blog);
+    }
+
+    /**
+     * 检查博客在数据库中是否已经存在
+     */
+    @GetMapping("/checkBlogExistByTitle")
+    @Logger("检查博客在数据库中是否已经存在")
+    public CommonResult<Object> checkBlogExistByTitle(@RequestParam String title){
+        boolean status = blogService.checkBlogExistByTitle(title);
+        return new CommonResult<>().data(status).message("查询成功").success();
+    }
+
+    /**
+     * 更新博客通过title
+     */
+    @PostMapping("/updateBlogByTitle")
+    @Logger("更新博客通过title")
+    public CommonResult<Object> updateBlogByTitle(@RequestBody Blog blog){
+        boolean status = blogService.updateBlogByTitle(blog);
+        return new CommonResult<>().data(status).message("更新成功").success();
+    }
+
+    /**
+     * 获取一个随机的图片
+     */
+    @GetMapping("/getRandomImgUrl")
+    @Logger("获取一个随机的图片")
+    public CommonResult<Object> getRandomImgUrl(){
+        String newUrl = blogService.getRandomImgUrl();
+        return new CommonResult<>().data(newUrl).success().message("获取信息成功");
     }
 }

@@ -1,5 +1,6 @@
 package com.ncepu.entity;
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.Id;
@@ -48,5 +49,6 @@ public class Information {
      * 网站创建时间
      */
     @Column(name = "create_time", columnDefinition = "Date")
+    @JsonFormat(pattern = "yyyy-MM-dd", timezone = "GMT+8")
     private Date createTime;
 }
