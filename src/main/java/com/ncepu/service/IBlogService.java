@@ -143,4 +143,12 @@ public interface IBlogService extends IService<Blog> {
      * @param response
      */
     void downloadZip(HttpServletResponse response) throws IOException;
+
+
+    /**
+     * 添加缓存版，根据id查询博客信息
+     * @param id 博客id
+     * @return 博客实体信息
+     */
+    Blog queryBlogByIdCached(int id);
 }

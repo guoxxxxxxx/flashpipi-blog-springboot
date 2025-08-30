@@ -13,11 +13,13 @@ import com.ncepu.service.IBlogService;
 import com.ncepu.utils.DateUtils;
 import com.ncepu.utils.SearchUtils;
 import com.ncepu.utils.template.ExternalRestTemplate;
+import jakarta.annotation.Resource;
 import jakarta.servlet.ServletOutputStream;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.core.io.ByteArrayResource;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -34,6 +36,7 @@ import java.nio.file.Paths;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.concurrent.TimeUnit;
 import java.util.zip.ZipEntry;
 import java.util.zip.ZipOutputStream;
 
@@ -43,6 +46,12 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
     BlogDao blogDao;
     @Autowired
     ExternalRestTemplate externalRestTemplate;
+
+    private static final String BLOG_CACHED_PREFIX = "CACHE:BLOG:";
+
+    @Resource
+    StringRedisTemplate stringRedisTemplate;
+
     @Override
     public List<Map<String, Object>> getBlogCategoryList(int page) {
         if (page != -1){
@@ -353,6 +362,25 @@ public class BlogServiceImpl extends ServiceImpl<BlogDao, Blog> implements IBlog
         finally {
             // 清理临时文件
             Files.walk(tempDirPath).sorted(Comparator.reverseOrder()).map(Path::toFile).forEach(File::delete);
+        }
+    }
+
+
+    @Override
+    public Blog queryBlogByIdCached(int id) {
+
+        // 先查询redis中是否含有文档缓存
+        String cacheBlogJson = stringRedisTemplate.opsForValue().get(BLOG_CACHED_PREFIX + id);
+        if (cacheBlogJson != null && !cacheBlogJson.isEmpty()){
+            Blog blog = JSON.parseObject(cacheBlogJson, Blog.class);
+            return blog;
+        }
+        else {
+            // 若缓存未命中，则从数据库中查询并存放至缓存中
+            Blog blog = baseMapper.selectById(id);
+            // 采用定时删除，若超过1小时还未更新，则主动从缓存中删除，保证数据的一致性。
+            stringRedisTemplate.opsForValue().set(BLOG_CACHED_PREFIX + id, JSON.toJSONString(blog), 1, TimeUnit.HOURS);
+            return blog;
         }
     }
 }

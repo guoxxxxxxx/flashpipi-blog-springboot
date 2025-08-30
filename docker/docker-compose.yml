@@ -1,0 +1,49 @@
+services:
+  mysql:
+    container_name: flashpipi-blog-mysql
+    image: mysql:8.0
+    volumes:
+      - ./data/mysql/conf:/etc/mysql/conf.d
+      - ./data/mysql/logs:/logs
+      - ./data/mysql/data:/var/lib/mysql
+    ports:
+      - "23306:3306"
+    command: [
+      'mysqld',
+      '--innodb-buffer-pool-size=80M',
+      '--character-set-server=utf8mb4',
+      '--collation-server=utf8mb4_unicode_ci',
+      '--default-time-zone=+8:00',
+      '--lower-case-table-names=1'
+    ]
+    environment:
+      MYSQL_DATABASE: 'blog_flash_pipi'
+      MYSQL_ROOT_PASSWORD: 123456
+
+  redis:
+    container_name: flashpipi-blog-redis
+    image: redis:7.4.0
+    volumes:
+      - ./data/redis/data:/data
+    command: "redis-server"
+    ports:
+      - "26379:6379"
+
+  elasticsearch:
+    container_name: flashpipi-blog-elasticsearch
+    image: elasticsearch:8.18.4
+    volumes:
+      - ./data/elasticsearch:/usr/share/elasticsearch/data
+    ports:
+      - "29200:9200"
+      - "29300:9300"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms1g -Xmx1g
+      - bootstrap.memory_lock=true
+      - ELASTIC_PASSWORD=A123456   # 设置 elastic 用户密码
+      - xpack.security.enabled=true               # 开启安全认证

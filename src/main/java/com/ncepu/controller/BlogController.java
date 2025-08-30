@@ -39,10 +39,12 @@ public class BlogController {
     /**
      * 根据id查询博客详细信息
      */
+    @Logger("根据id查询博客详细信息")
     @GetMapping("/getBlogById")
     public Blog getBlogById(@RequestParam int id){
         blogService.addViewsCount(id);
-        return blogService.getById(id);
+        Blog blog = blogService.queryBlogByIdCached(id);
+        return blog;
     }
 
     /**

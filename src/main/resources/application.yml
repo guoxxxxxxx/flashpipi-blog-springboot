@@ -1,15 +1,15 @@
 spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:3306/blog_flash_pipi?serverTimezone=UTC
+    url: jdbc:mysql://localhost:23306/blog_flash_pipi?serverTimezone=UTC
     username: root
     password: 123456
     type: com.alibaba.druid.pool.DruidDataSource
   data:
     redis:
       database: 1
-      host: 192.168.247.137
-      port: 6379
+      host: localhost
+      port: 26379
       connect-timeout: 10s
   jpa:
     hibernate:
