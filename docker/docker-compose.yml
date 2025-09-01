@@ -1,24 +1,57 @@
+version: "3.9"
+
 services:
-  mysql:
-    container_name: flashpipi-blog-mysql
+  mysql-master:
+    container_name: flashpipi-blog-mysql-master
     image: mysql:8.0
+    restart: always
     volumes:
       - ./data/mysql/conf:/etc/mysql/conf.d
       - ./data/mysql/logs:/logs
       - ./data/mysql/data:/var/lib/mysql
     ports:
       - "23306:3306"
-    command: [
-      'mysqld',
-      '--innodb-buffer-pool-size=80M',
-      '--character-set-server=utf8mb4',
-      '--collation-server=utf8mb4_unicode_ci',
-      '--default-time-zone=+8:00',
-      '--lower-case-table-names=1'
-    ]
+    command: >
+      mysqld
+      --innodb-buffer-pool-size=80M
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-time-zone=+8:00
+      --lower-case-table-names=1
+      --server-id=1
+      --log-bin=mysql-bin
+      --binlog_format=ROW
+      --default-authentication-plugin=mysql_native_password
     environment:
       MYSQL_DATABASE: 'blog_flash_pipi'
       MYSQL_ROOT_PASSWORD: 123456
+
+  mysql-slave:
+    container_name: flashpipi-blog-mysql-slave
+    image: mysql:8.0
+    restart: always
+    volumes:
+      - ./data/mysql_slave/conf:/etc/mysql/conf.d
+      - ./data/mysql_slave/logs:/logs
+      - ./data/mysql_slave/data:/var/lib/mysql
+    ports:
+      - "13306:3306"
+    command: >
+      mysqld
+      --innodb-buffer-pool-size=80M
+      --character-set-server=utf8mb4
+      --collation-server=utf8mb4_unicode_ci
+      --default-time-zone=+8:00
+      --lower-case-table-names=1
+      --server-id=2
+      --relay-log=mysql-relay-bin
+      --read-only=1
+      --default-authentication-plugin=mysql_native_password
+    environment:
+      MYSQL_DATABASE: 'blog_flash_pipi'
+      MYSQL_ROOT_PASSWORD: 123456
+    depends_on:
+      - mysql-master
 
   redis:
     container_name: flashpipi-blog-redis
@@ -45,5 +78,5 @@ services:
       - discovery.type=single-node
       - ES_JAVA_OPTS=-Xms1g -Xmx1g
       - bootstrap.memory_lock=true
-      - ELASTIC_PASSWORD=A123456   # 设置 elastic 用户密码
-      - xpack.security.enabled=true               # 开启安全认证
+      - ELASTIC_PASSWORD=A123456
+      - xpack.security.enabled=true

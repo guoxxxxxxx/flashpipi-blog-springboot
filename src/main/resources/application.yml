@@ -18,10 +18,16 @@ spring:
     multipart:
       max-file-size: 1024MB
       max-request-size: 1024MB
+  elasticsearch:
+    uris: http://192.168.2.4:29200
+    username: elastic
+    password: A123456
+
 mybatis-plus:
 #  config-location: classpath:mapper/*.xml
 #  configuration:
 #    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+
 
 sa-token:
   # token 名称（同时也是 cookie 名称）
