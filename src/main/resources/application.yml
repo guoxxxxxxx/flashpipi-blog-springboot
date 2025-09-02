@@ -1,10 +1,13 @@
 spring:
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    url: jdbc:mysql://localhost:23306/blog_flash_pipi?serverTimezone=UTC
-    username: root
-    password: 123456
-    type: com.alibaba.druid.pool.DruidDataSource
+    driver-class-name: org.apache.shardingsphere.driver.ShardingSphereDriver
+    url: jdbc:shardingsphere:classpath:shardingsphere-blog.yaml
+  #  datasource:
+#    driver-class-name: com.mysql.cj.jdbc.Driver
+#    url: jdbc:mysql://localhost:23306/blog_flash_pipi?serverTimezone=UTC
+#    username: root
+#    password: 123456
+#    type: com.alibaba.druid.pool.DruidDataSource
   data:
     redis:
       database: 1
@@ -13,7 +16,7 @@ spring:
       connect-timeout: 10s
   jpa:
     hibernate:
-      ddl-auto: update
+      ddl-auto: none
   servlet:
     multipart:
       max-file-size: 1024MB
